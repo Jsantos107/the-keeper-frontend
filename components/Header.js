@@ -21,6 +21,8 @@ const styles = StyleSheet.create({
     title:{
         color:'black',
         fontSize: 18,
+        fontWeight: '900',
+        marginBottom: '10%'
     }
 });
 
