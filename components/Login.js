@@ -1,49 +1,49 @@
 import React, { useState, Component } from 'react';
-import { View, TextInput, StyleSheet, Button, Modal, AsyncStorage } from 'react-native'
+import { View, TextInput, StyleSheet, Button, Modal, AsyncStorage, StatusBar } from 'react-native'
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import Home from './Home';
+import Header from './Header'
 
 const test = {username:'test', password:'123'}
-export default function Login (props){
-    const userURL = `http://localhost:3000/users`
-    const loginURL = `http://localhost:3000/login`
-    const [username, setusername] = useState('')
-    const [password, setpassword] = useState('')
-    const [userInfo, setuserInfo] = useState('')
 
-    const usernameInputHandler = (enteredText) =>{
-        setusername(enteredText)
+export default class Login extends Component{
+    state={
+        username:'',
+        password:''
     }
-
-    const passwordInputHandler = (enteredText) =>{
-        setpassword(enteredText)
+    static navigationOptions = {
+        header: null
     }
-
-    const signin = async () => {
-        if(test.username === username && test.password === password){
-            alert("Logged in")
-            await AsyncStorage.setItem('logged', true)
-        }else{
-            alert("Username or password are incorrect!")
-        }
-    };
     
-    return( 
-        <Modal visible={props.showLogin} animationType='slide'>
-            <View style={styles.login}>
-                <TextInput style={styles.input} placeholder="Enter Username" 
-                onChangeText={usernameInputHandler}
-                value={username}/>
+    render(){
+        return( 
+            <Modal visible={this.props.showLogin} animationType='slide'>
+                <Header />
+                <StatusBar backgroundColor='#1e90ff' barStyle='light-content'/>
+                <View style={styles.login}>
+                    <TextInput style={styles.input} placeholder="Enter Username"
+                    autoCapitalize={"none"}
+                    value={this.state.username} onChangeText={(username)=> this.setState({username})}/>
 
-                <TextInput style={styles.input} placeholder="Enter Password" 
-                onChangeText={passwordInputHandler}
-                value={password} secureTextEntry={true}/>
+                    <TextInput style={styles.input} placeholder="Enter Password" autoCapitalize={"none"} 
+                    value={this.state.password} secureTextEntry={true} onChangeText={(password)=> this.setState({password})}/>
 
-                <View style={styles.button}>
-                    <Button title='Cancel' color='red' onPress={props.cancelLogin}/>
-                    <Button title='Submit' onPress={()=> signin()}/>
+                    <View style={styles.button}>
+                        <Button title='Cancel' color='red' onPress={this.props.cancelLogin}/>
+                        <Button title='Submit' onPress={this.signin}/>
+                    </View>
                 </View>
-            </View>
-        </Modal>
-    );
+            </Modal>
+        );
+    }
+    signin = async() => {
+        if(test.username === this.state.username && test.password === this.state.password){
+            alert('Logged In');
+        }else{
+            alert('Username or password are incorrect!')
+        }
+    }
 };
 
 const styles = StyleSheet.create({
